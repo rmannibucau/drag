@@ -1,0 +1,66 @@
+= Directed Rewriter of Acyclic Graphs
+
+Simple library to process a DAG and generate another one.
+
+== Basic usage
+
+[source,java]
+----
+// read the dag in the right format
+final Dag dag = DagLoader.from("{...}").get();
+
+// create the list of mutating rules
+final List<Function<Dag, Dag>> rules = singletonList(new PushdownRule());
+
+// rewrite the dag
+final Dag rewritten = new Dragger().pushdown(dag);
+// or
+final List<Function<Dag, Dag>> rules = singletonList(new PushdownRule());
+final Dag rewritten = new Dragger().rewrite(dag, rules);
+
+// reserialize the dag or map it to another model
+// ...
+try (final javax.json.bind.Jsonb jsonb = JsonbBuilder.create()) {
+    return jsonb.toJson(rewritten);
+} catch (final Exception e) {
+    throw new IllegalStateException(e);
+}
+----
+
+== Dag format
+
+If you use `DagLoader` default implementation which uses _JSON-B_ to read the dag, here is the expected JSON shape:
+
+[source,json]
+----
+{
+  "ports": [
+    {
+      "id": "...", // port identifier
+      "nodeId": "...", // component node identifier
+      "data": {
+        // ...
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "...", // step/link identifier
+      "sourceId": "...", // "from" port
+      "targetId": "...", // "to" port
+      "data": {
+        // ...
+      }
+    }
+  ],
+  "components": [
+    {
+      "id": "...", // component instance identifier
+      "type": "...", // component identifier
+      "data": {
+        // ...
+      }
+    }
+  ]
+}
+----
