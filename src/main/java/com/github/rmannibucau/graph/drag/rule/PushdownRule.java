@@ -92,7 +92,7 @@ public class PushdownRule implements Function<Dag, Dag> {
         }
 
         // TODO: add a SPI here?
-        // here we can add logic to rewrite the configuration (ex: take $pushdown and rewrite the sql query)
+        // here we can add logic to rewrite the configuration
 
         return copy;
     }
